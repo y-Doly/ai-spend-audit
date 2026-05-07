@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Spend Audit</title>
+</head>
+<body>
+    <h1>AI Spend Audit Tool</h1>
+
+    <form action="/audit" method="POST">
+        <label>Tool:</label>
+        <select name="tool">
+            <option value="chatgpt">ChatGPT</option>
+            <option value="copilot">GitHub Copilot</option>
+        </select>
+
+        <br><br>
+
+        <label>Plan:</label>
+        <input type="text" name="plan" required>
+
+        <br><br>
+
+        <label>Monthly Spend ($):</label>
+        <input type="number" name="spend" required>
+
+        <br><br>
+
+        <label>Team Size:</label>
+        <input type="number" name="users" required>
+
+        <br><br>
+
+        <label>Use Case:</label>
+        <select name="use_case">
+            <option value="coding">Coding</option>
+            <option value="writing">Writing</option>
+        </select>
+
+        <br><br>
+
+        <button type="submit">Audit My Spend</button>
+    </form>
+</body>
+</html>
