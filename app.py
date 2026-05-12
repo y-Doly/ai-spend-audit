@@ -1,29 +1,74 @@
 from flask import Flask, render_template, request, redirect
-from audit.engine import audit_tool
+from audit.engine import audit_all_tools
 from utils.summary import generate_summary
 from database import init_db, save_audit
 
-init_db()
+from flask_mail import Mail, Message
+from dotenv import load_dotenv
+
+import sqlite3
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
+
+# Mail config
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+
+mail = Mail(app)
+
+# Initialize database
+init_db()
+
+# Temporary storage
+latest_results = {}
+
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
+
 @app.route("/audit", methods=["POST"])
 def audit():
+
     global latest_results
-    latest_results = results
-    tool = request.form.get("tool")
-    plan = request.form.get("plan")
-    spend = float(request.form.get("spend"))
-    users = int(request.form.get("users"))
+
+    tools = {
+        "chatgpt": {
+            "plan": request.form.get("chatgpt_plan"),
+            "spend": float(request.form.get("chatgpt_spend") or 0),
+            "users": int(request.form.get("chatgpt_users") or 0)
+        },
+
+        "copilot": {
+            "plan": request.form.get("copilot_plan"),
+            "spend": float(request.form.get("copilot_spend") or 0),
+            "users": int(request.form.get("copilot_users") or 0)
+        }
+    }
+
     use_case = request.form.get("use_case")
 
-    result = audit_tool(tool, plan, users, spend, use_case)
+    results = audit_all_tools(tools, use_case)
 
-    return render_template("result.html", result=result)
+    latest_results = results
+
+    summary = generate_summary(
+        results["total_savings"],
+        results["results"]
+    )
+
+    return render_template(
+        "result.html",
+        results=results,
+        summary=summary
+    )
 
 
 @app.route("/save-lead", methods=["POST"])
@@ -42,6 +87,30 @@ def save_lead_route():
         latest_results["total_savings"],
         recommendations
     )
+
+    # Send confirmation email
+    msg = Message(
+        subject="Your AI Spend Audit Report",
+        sender=app.config["MAIL_USERNAME"],
+        recipients=[email]
+    )
+
+    msg.body = f"""
+Thanks for using AI Spend Audit.
+
+Estimated monthly savings:
+${latest_results["total_savings"]}
+
+Your public report:
+http://127.0.0.1:5000/result/{audit_id}
+"""
+
+    # Prevent app crash if email fails
+    try:
+        mail.send(msg)
+
+    except Exception as e:
+        print("Email failed:", e)
 
     return redirect(f"/result/{audit_id}")
 

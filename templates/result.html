@@ -1,37 +1,82 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Audit Result</title>
+    <title>Audit Results</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>Audit Result</h1>
 
-    <p>Tool: {{ result.tool }}</p>
-    <p>Current Spend: ${{ result.current_spend }}</p>
-    <p>Recommendation: {{ result.recommendation }}</p>
-    <p>Potential Savings: ${{ result.savings }}</p>
-    <p>Reason: {{ result.reason }}</p>
+    <h1>AI Spend Audit Results</h1>
 
-    <h2>AI Summary</h2>
-    
-    <p>{{ summary }}</p>
-
-    <a href="/">Go Back</a>
+    <h2>
+        Total Estimated Savings:
+        ${{ results.total_savings }}/month
+    </h2>
 
     <hr>
 
-<h2>Save Your Audit Report</h2>
+    {% for item in results.results %}
 
-<form action="/save-lead" method="POST">
+        <div>
 
-    <input type="email" name="email" placeholder="Enter your email" required>
+            <h3>{{ item.tool }}</h3>
 
-    <input type="text" name="company" placeholder="Company Name">
+            <p>
+                <strong>Recommendation:</strong>
+                {{ item.recommendation }}
+            </p>
 
-    <input type="text" name="role" placeholder="Your Role">
+            <p>
+                <strong>Potential Savings:</strong>
+                ${{ item.savings }}
+            </p>
 
-    <button type="submit">Save Report</button>
+            <p>
+                <strong>Reason:</strong>
+                {{ item.reason }}
+            </p>
 
-</form>
+        </div>
+
+        <hr>
+
+    {% endfor %}
+
+    <h2>AI Summary</h2>
+
+    <p>{{ summary }}</p>
+
+    <hr>
+
+    <h2>Save Your Audit Report</h2>
+
+    <form action="/save-lead" method="POST">
+
+        <input
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+        >
+
+        <input
+            type="text"
+            name="company"
+            placeholder="Company Name"
+        >
+
+        <input
+            type="text"
+            name="role"
+            placeholder="Your Role"
+        >
+
+        <button type="submit">
+            Save Report
+        </button>
+
+    </form>
+
 </body>
 </html>

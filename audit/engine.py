@@ -1,7 +1,9 @@
 import json
 
 with open("data/pricing.json") as f:
-    pricing =json.load(f)
+    pricing = json.load(f)
+
+
 def audit_all_tools(tools, use_case):
 
     results = []
@@ -11,11 +13,12 @@ def audit_all_tools(tools, use_case):
     chatgpt = tools["chatgpt"]
 
     if chatgpt["plan"] == "team" and chatgpt["users"] < 3:
+
         team_price = pricing["chatgpt"]["team"]
         plus_price = pricing["chatgpt"]["plus"]
-        
+
         savings = (team_price - plus_price) * chatgpt["users"]
-        
+
         results.append({
             "tool": "ChatGPT",
             "recommendation": "Switch to Plus",
@@ -28,8 +31,18 @@ def audit_all_tools(tools, use_case):
     # Copilot logic
     copilot = tools["copilot"]
 
-    if use_case == "coding" and copilot["plan"] == "business" and copilot["users"] < 3:
-        savings = 9 * copilot["users"]
+    if (
+        use_case == "coding"
+        and copilot["plan"] == "business"
+        and copilot["users"] < 3
+    ):
+
+        business_price = pricing["copilot"]["business"]
+        individual_price = pricing["copilot"]["individual"]
+
+        savings = (
+            business_price - individual_price
+        ) * copilot["users"]
 
         results.append({
             "tool": "GitHub Copilot",
