@@ -12,6 +12,26 @@
     <p>Potential Savings: ${{ result.savings }}</p>
     <p>Reason: {{ result.reason }}</p>
 
+    <h2>AI Summary</h2>
+    
+    <p>{{ summary }}</p>
+
     <a href="/">Go Back</a>
+
+    <hr>
+
+<h2>Save Your Audit Report</h2>
+
+<form action="/save-lead" method="POST">
+
+    <input type="email" name="email" placeholder="Enter your email" required>
+
+    <input type="text" name="company" placeholder="Company Name">
+
+    <input type="text" name="role" placeholder="Your Role">
+
+    <button type="submit">Save Report</button>
+
+</form>
 </body>
 </html>
