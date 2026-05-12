@@ -1,25 +1,23 @@
-const form = document.querySelector("form");
+document.addEventListener("DOMContentLoaded", () => {
 
-window.onload = () => {
-    const savedData = JSON.parse(localStorage.getItem("auditForm"));
+    const form = document.querySelector("form");
 
-    if (savedData) {
-        Object.keys(savedData).forEach(key => {
-            const field = document.querySelector(`[name="${key}"]`);
-            if (field) {
-                field.value = savedData[key];
-            }
+    if (!form) return;
+
+    // Load saved values
+    document.querySelectorAll("input, select").forEach((field) => {
+
+        const savedValue = localStorage.getItem(field.name);
+
+        if (savedValue !== null) {
+            field.value = savedValue;
+        }
+
+        // Save on change
+        field.addEventListener("input", () => {
+            localStorage.setItem(field.name, field.value);
         });
-    }
-};
 
-form.addEventListener("input", () => {
-    const formData = new FormData(form);
-    const data = {};
-
-    formData.forEach((value, key) => {
-        data[key] = value;
     });
 
-    localStorage.setItem("auditForm", JSON.stringify(data));
 });
