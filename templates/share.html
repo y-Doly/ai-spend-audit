@@ -2,19 +2,80 @@
 <html>
 <head>
 
-    <title>AI Spend Audit Report</title>
+    <title>Public AI Spend Audit</title>
 
-    <meta property="og:title" content="AI Spend Savings Report">
-    <meta property="og:description" content="See how much this startup could save on AI tools">
+    <script src="https://cdn.tailwindcss.com"></script>
 
 </head>
-<body>
 
-    <h1>Public AI Spend Audit</h1>
+<body class="bg-gray-100 min-h-screen p-8">
 
-    <h2>Total Savings: ${{ total_savings }}/month</h2>
+    <div class="max-w-5xl mx-auto">
 
-    <p>{{ recommendations }}</p>
+        <!-- Header -->
+
+        <div class="bg-black text-white rounded-2xl p-8 mb-8 shadow-xl">
+
+            <h1 class="text-4xl font-bold mb-4">
+                Public AI Spend Audit
+            </h1>
+
+            <p class="text-gray-300 mb-6">
+                Estimated optimization opportunities for this AI stack.
+            </p>
+
+            <div class="bg-gray-900 rounded-xl p-6">
+
+                <p class="text-gray-400 text-sm">
+                    Monthly Savings
+                </p>
+
+                <h2 class="text-5xl font-bold mt-2">
+                    ${{ total_savings }}
+                </h2>
+
+            </div>
+
+        </div>
+
+        <!-- Recommendations -->
+
+        <div class="space-y-6">
+
+            {% for item in recommendations %}
+
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+
+                <div class="flex items-center justify-between mb-4">
+
+                    <h2 class="text-2xl font-bold">
+                        {{ item.tool }}
+                    </h2>
+
+                    <span class="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold">
+                        Save ${{ item.savings }}/mo
+                    </span>
+
+                </div>
+
+                <p class="text-lg font-medium mb-2">
+                    Recommendation:
+                    <span class="text-blue-600">
+                        {{ item.recommendation }}
+                    </span>
+                </p>
+
+                <p class="text-gray-600">
+                    {{ item.reason }}
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
 
 </body>
 </html>

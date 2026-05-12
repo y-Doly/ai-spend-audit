@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 
 import sqlite3
 import os
+import json
 
 load_dotenv()
 
@@ -40,6 +41,7 @@ def audit():
     global latest_results
 
     tools = {
+
         "chatgpt": {
             "plan": request.form.get("chatgpt_plan"),
             "spend": float(request.form.get("chatgpt_spend") or 0),
@@ -50,6 +52,24 @@ def audit():
             "plan": request.form.get("copilot_plan"),
             "spend": float(request.form.get("copilot_spend") or 0),
             "users": int(request.form.get("copilot_users") or 0)
+        },
+
+        "cursor": {
+            "plan": request.form.get("cursor_plan"),
+            "spend": float(request.form.get("cursor_spend") or 0),
+            "users": int(request.form.get("cursor_users") or 0)
+        },
+
+        "claude": {
+            "plan": request.form.get("claude_plan"),
+            "spend": float(request.form.get("claude_spend") or 0),
+            "users": int(request.form.get("claude_users") or 0)
+        },
+
+        "gemini": {
+            "plan": request.form.get("gemini_plan"),
+            "spend": float(request.form.get("gemini_spend") or 0),
+            "users": int(request.form.get("gemini_users") or 0)
         }
     }
 
@@ -78,7 +98,7 @@ def save_lead_route():
     company = request.form.get("company")
     role = request.form.get("role")
 
-    recommendations = str(latest_results["results"])
+    recommendations = json.dumps(latest_results["results"])
 
     audit_id = save_audit(
         email,
@@ -138,7 +158,7 @@ def public_result(audit_id):
     return render_template(
         "share.html",
         total_savings=audit[0],
-        recommendations=audit[1]
+        recommendations=json.loads(audit[1])
     )
 
 
