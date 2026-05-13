@@ -1,2 +1,3 @@
-pip install openai python-dotenv flask-mail
-pip freeze > requirements.txt
+openai
+python-dotenv
+Flask-Mail
