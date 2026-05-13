@@ -1,3 +1,4 @@
 openai
 python-dotenv
 Flask-Mail
+pytest==8.0.0
